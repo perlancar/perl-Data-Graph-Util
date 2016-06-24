@@ -92,6 +92,8 @@ None are exported by default, but they are exportable.
 
 =head2 toposort(\%graph) => sorted list
 
+Perform a topological sort on graph (currently using the Kahn algorithm).
+
 =head2 is_cyclic(\%graph) => bool
 
 Return true if graph contains at least one cycle.
@@ -104,5 +106,7 @@ Return true if graph is acyclic, i.e. contains no cycles.
 =head1 SEE ALSO
 
 L<https://en.wikipedia.org/wiki/Graph_(abstract_data_type)>
+
+L<https://en.wikipedia.org/wiki/Topological_sorting#Kahn.27s_algorithm>
 
 L<Sort::Topological> can also sort a DAG, but cannot handle cyclical graph.
