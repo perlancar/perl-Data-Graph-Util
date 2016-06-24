@@ -18,6 +18,14 @@ subtest "toposort" => sub {
     is_deeply([toposort({a=>["b"], b=>["c","d"],        d=>["c"]})],
               [qw/a b d c/]);
     dies_ok { toposort({a=>["b"], b=>["c"], c=>["a"]}) };
+
+    is_deeply([toposort({a=>["b"], b=>["c","d"], d=>["c"]},
+                        [qw/b a/])],
+              [qw/a b/]);
+    is_deeply([toposort({a=>["b"], b=>["c","d"], d=>["c"]},
+                        [qw/e a b a/])],
+              [qw/a a b e/]);
+
 };
 
 subtest "is_cyclic" => sub {

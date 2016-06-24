@@ -11,8 +11,6 @@ use Exporter qw(import);
 our @EXPORT_OK = qw(toposort is_cyclic is_acyclic);
 
 sub _toposort {
-    #no warnings 'uninitialized';
-
     my $graph = shift;
 
     # this is the Kahn algorithm, ref:
@@ -40,7 +38,18 @@ sub _toposort {
     }
 
     if (@L == keys(%$graph)) {
-        return (0, \@L);
+        if (@_) {
+            no warnings 'uninitialized';
+            # user specifies a list to be sorted according to @L. this is like
+            # Sort::ByExample but we implement it ourselves to avoid dependency.
+            my %pos;
+            for (0..$#L) { $pos{$L[$_]} = $_+1 }
+            return (0, [
+                sort { ($pos{$a} || @L+1) <=> ($pos{$b} || @L+1) } @{$_[0]}
+            ]);
+        } else {
+            return (0, \@L);
+        }
     } else {
         # there is a cycle
         return (1, \@L);
@@ -71,8 +80,15 @@ sub is_acyclic {
  use Data::Graph::Util qw(toposort is_cyclic is_acyclic);
 
  my @sorted = toposort(
-     { a=>["b"], b=>["c", "d"], c=>[], d=>["c"] }, # graph
+     { a=>["b"], b=>["c", "d"], d=>["c"] },
  ); # => ("a", "b", "d", "c")
+
+ # sort specified nodes (nodes not mentioned in the graph will be put at the
+ # end), duplicates not removed
+ my @sorted = toposort(
+     { a=>["b"], b=>["c", "d"], d=>["c"] },
+     ["e", "a", "b", "a"]
+ ); # => ("a", "a", "b", "e")
 
  say is_cyclic ({a=>["b"]}); # => 0
  say is_acyclic({a=>["b"]}); # => 1
@@ -90,17 +106,25 @@ Early release. More functions will be added later.
 
 None are exported by default, but they are exportable.
 
-=head2 toposort(\%graph) => sorted list
+=head2 toposort(\%graph[ , \@nodes ]) => sorted list
 
-Perform a topological sort on graph (currently using the Kahn algorithm).
+Perform a topological sort on graph (currently using the Kahn algorithm). Will
+return the nodes of the graph sorted topologically.
+
+If C<\@nodes> is specified, will instead return C<@nodes> sorted according to
+the topological order. Duplicates are allowed and not removed. Nodes not
+mentioned in graph are also allowed and will be put at the end.
 
 =head2 is_cyclic(\%graph) => bool
 
-Return true if graph contains at least one cycle.
+Return true if graph contains at least one cycle. Currently implemented by
+attempting a topological sort on the graph. If it can't be performed, this means
+the graph contains cycle(s).
 
 =head2 is_acyclic(\%graph) => bool
 
-Return true if graph is acyclic, i.e. contains no cycles.
+Return true if graph is acyclic, i.e. contains no cycles. The opposite of
+C<is_cyclic()>.
 
 
 =head1 SEE ALSO
