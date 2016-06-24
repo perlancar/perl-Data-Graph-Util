@@ -81,6 +81,11 @@ sub is_acyclic {
  say is_acyclic({a=>["b"], b=>["c"], c=>["a"]}); # => 0
 
 
+=head1 DESCRIPTION
+
+Early release. More functions will be added later.
+
+
 =head1 FUNCTIONS
 
 None are exported by default, but they are exportable.
@@ -97,5 +102,7 @@ Return true if graph is acyclic, i.e. contains no cycles.
 
 
 =head1 SEE ALSO
+
+L<https://en.wikipedia.org/wiki/Graph_(abstract_data_type)>
 
 L<Sort::Topological> can also sort a DAG, but cannot handle cyclical graph.
