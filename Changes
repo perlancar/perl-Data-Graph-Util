@@ -1,5 +1,3 @@
-Revision history for Data-Graph-Util
-
 0.002   2016-06-24 (PERLANCAR)
 
 	- toposort() now accepts an optional second argument to sort
