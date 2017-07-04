@@ -109,7 +109,8 @@ None are exported by default, but they are exportable.
 =head2 toposort(\%graph[ , \@nodes ]) => sorted list
 
 Perform a topological sort on graph (currently using the Kahn algorithm). Will
-return the nodes of the graph sorted topologically.
+return the nodes of the graph sorted topologically. Will die if graph cannot be
+sorted, e.g. when graph is cyclic.
 
 If C<\@nodes> is specified, will instead return C<@nodes> sorted according to
 the topological order. Duplicates are allowed and not removed. Nodes not
