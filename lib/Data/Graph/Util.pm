@@ -24,7 +24,7 @@ sub _toposort {
 
     # collect nodes with no incoming edges (in_degree = 0)
     my @S;
-    for (keys %in_degree) { unshift @S, $_ if $in_degree{$_} == 0 }
+    for (sort keys %in_degree) { unshift @S, $_ if $in_degree{$_} == 0 }
 
     my @L;
     while (@S) {
