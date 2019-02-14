@@ -79,14 +79,14 @@ sub is_acyclic {
 
  use Data::Graph::Util qw(toposort is_cyclic is_acyclic);
 
- # return nodes that satisfy the following graph: a must come before b, b must
- # come before c & d, and d must come before c.
+ # return nodes of a graph. a must come before b, b must come before c & d, and
+ # d must come before c.
 
  my @sorted = toposort(
      { a=>["b"], b=>["c", "d"], d=>["c"] },
  ); # => ("a", "b", "d", "c")
 
- # sort specified nodes (2nd argument) using the graph. nodes not mentioned in
+ # sort nodes specified in 2nd argument using the graph. nodes not mentioned in
  # the graph will be put at the end. duplicates are not removed.
 
  my @sorted = toposort(
