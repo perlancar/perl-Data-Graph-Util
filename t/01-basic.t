@@ -22,6 +22,9 @@ subtest "toposort" => sub {
     is_deeply([toposort({a=>["b"], b=>["c","d"], d=>["c"]},
                         [qw/b a/])],
               [qw/a b/]);
+    is_deeply([toposort({a=>["b"], b=>["c","d"], d=>["c"], e=>["b"]},
+                        [qw/a b c d e/])],
+              [qw/a e b d c/]);
     is_deeply([toposort({a=>["b"], b=>["c","d"], d=>["c"]},
                         [qw/e a b a/])],
               [qw/a a b e/]);
