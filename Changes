@@ -1,3 +1,8 @@
+0.004   2019-02-14 (PERLANCAR)
+
+	- Make sort order deterministic [GH#1].
+
+
 0.003   2017-07-04 (PERLANCAR)
 
 	- No functional changes.
