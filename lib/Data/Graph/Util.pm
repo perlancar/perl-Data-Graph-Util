@@ -114,7 +114,11 @@ Early release. More functions will be added later.
 
 None are exported by default, but they are exportable.
 
-=head2 toposort(\%graph[ , \@nodes ]) => sorted list
+=head2 toposort
+
+Usage:
+
+ toposort(\%graph[ , \@nodes ]) => sorted list
 
 Perform a topological sort on graph (currently using the Kahn algorithm). Will
 return the nodes of the graph sorted topologically. Will die if graph cannot be
@@ -124,16 +128,24 @@ If C<\@nodes> is specified, will instead return C<@nodes> sorted according to
 the topological order. Duplicates are allowed and not removed. Nodes not
 mentioned in graph are also allowed and will be put at the end.
 
-=head2 is_cyclic(\%graph) => bool
+=head2 is_cyclic
+
+Usage:
+
+ is_cyclic(\%graph) => bool
 
 Return true if graph contains at least one cycle. Currently implemented by
 attempting a topological sort on the graph. If it can't be performed, this means
 the graph contains cycle(s).
 
-=head2 is_acyclic(\%graph) => bool
+=head2 is_acyclic
+
+Usage:
+
+ is_acyclic(\%graph) => bool
 
 Return true if graph is acyclic, i.e. contains no cycles. The opposite of
-C<is_cyclic()>.
+L</is_cyclic>.
 
 
 =head1 SEE ALSO
