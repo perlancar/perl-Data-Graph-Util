@@ -109,6 +109,8 @@ sub is_acyclic {
 
 Early release. More functions will be added later.
 
+Keywords: topological ordering, dependency sorting, dependency ordering.
+
 
 =head1 FUNCTIONS
 
@@ -154,4 +156,10 @@ L<https://en.wikipedia.org/wiki/Graph_(abstract_data_type)>
 
 L<https://en.wikipedia.org/wiki/Topological_sorting#Kahn.27s_algorithm>
 
-L<Sort::Topological> can also sort a DAG, but cannot handle cyclical graph.
+L<Algorithm::Dependency> can also do topological sorting, but it is more finicky
+with input: graph cannot be epmty and all nodes need to be specified.
+
+L<Sort::Topological> can also sort a DAG, but cannot handle cyclical graph. It
+also performs poorly and eats too much RAM on larger graphs.
+
+See L<Bencher::Scenario::GraphTopologicalSortModules> for benchmarks.
