@@ -152,9 +152,17 @@ L</is_cyclic>.
 
 =head1 SEE ALSO
 
+=head2 Articles
+
 L<https://en.wikipedia.org/wiki/Graph_(abstract_data_type)>
 
 L<https://en.wikipedia.org/wiki/Topological_sorting#Kahn.27s_algorithm>
+
+=head2 Related modules
+
+L<Graph> contains more graph-related algorithms.
+
+=head3 Topological sort
 
 L<Algorithm::Dependency> can also do topological sorting, but it is more finicky
 with input: graph cannot be epmty and all nodes need to be specified.
