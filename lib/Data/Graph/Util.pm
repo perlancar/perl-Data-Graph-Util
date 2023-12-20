@@ -1,14 +1,22 @@
 package Data::Graph::Util;
 
-# DATE
-# VERSION
-
 use 5.010001;
 use strict;
 use warnings;
 
 use Exporter qw(import);
-our @EXPORT_OK = qw(toposort is_cyclic is_acyclic);
+
+# AUTHORITY
+# DATE
+# DIST
+# VERSION
+
+our @EXPORT_OK = qw(
+                       toposort
+                       is_cyclic
+                       is_acyclic
+                       connected_components
+               );
 
 sub _toposort {
     my $graph = shift;
@@ -72,12 +80,57 @@ sub is_acyclic {
     !$err;
 }
 
+sub connected_components {
+    my $graph = shift;
+
+    # create a map of bidirectional connections between nodes, to ease checking
+    my %connections;
+    for my $node1 (keys %$graph) {
+        for my $node2 (@{ $graph->{$node1} }) {
+            $connections{$node1}{$node2} = 1;
+            $connections{$node2}{$node1} = 1;
+        }
+    }
+
+    my @subgraphs;
+    my %remaining_nodes = %$graph;
+
+    # traverse a node to get a subgraph. remove the nodes from the original
+    # graph. repeat until there are no nodes left on the original graph.
+
+    while (1) { # while there are still unlabeled nodes
+        my ($node1, $dependants1) = each %remaining_nodes or last;
+
+        my $subgraph = {$node1 => $dependants1};
+        my %seen;
+        my @nodes_to_check = keys %{ $connections{$node1} };
+
+        while (@nodes_to_check) { # while we can still find nodes connected to the subgraph
+            my $node2 = shift @nodes_to_check;
+            next if $seen{$node2}++;
+            if (my $dependants2 = delete $remaining_nodes{$node2}) {
+                $subgraph->{$node2} = $dependants2;
+                push @nodes_to_check, keys %{ $connections{$node2} };
+            }
+        }
+
+        push @subgraphs, $subgraph;
+    }
+
+    sort { scalar(keys %$b) <=> scalar(keys %$a) } @subgraphs;
+}
+
 1;
 # ABSTRACT: Utilities related to graph data structure
 
 =head1 SYNOPSIS
 
- use Data::Graph::Util qw(toposort is_cyclic is_acyclic);
+ use Data::Graph::Util qw(
+     toposort
+     is_cyclic
+     is_acyclic
+     connected_components
+ );
 
  # return nodes of a graph. a must come before b, b must come before c & d, and
  # d must come before c.
@@ -104,10 +157,26 @@ sub is_acyclic {
  say is_cyclic ({a=>["b"], b=>["c"], c=>["a"]}); # => 1
  say is_acyclic({a=>["b"], b=>["c"], c=>["a"]}); # => 0
 
+ # return connected subgraphs, sorted by the largest
+ my @subgraphs = connected_components(
+     { a=>["b"], b=>["c", "d"], d=>["c"] },
+ ); # => return 1 element, all nodes are connected as a single graph
+
+ # return connected subgraphs, sorted by the largest
+ my @subgraphs = connected_components(
+     { a=>["b"], b=>["c", "d"], d=>["c"],
+       e=>["f"],
+       g=>["h", "i"], j=>["a"],
+     },
+ ); # => return 3 elements, there are 3 separate subgraphs
+    # ({a=>["b"], b=>["c", "d"], d=>["c"], j=>["a"]}, {e=>["f"]}, {g=>["h","i"]})
+
 
 =head1 DESCRIPTION
 
 Early release. More functions will be added later.
+
+This module provides some functions related to the graph data structure.
 
 Keywords: topological ordering, dependency sorting, dependency ordering.
 
@@ -148,6 +217,16 @@ Usage:
 
 Return true if graph is acyclic, i.e. contains no cycles. The opposite of
 L</is_cyclic>.
+
+=head2 connected_components
+
+Usage:
+
+ connected_components(\%graph) => list of subgraphs
+
+Return list of subgraphs that are not connected to one another, sorted by
+descending size. If all the nodes are connected, will return a single subgraph
+(the original graph itself).
 
 
 =head1 SEE ALSO
